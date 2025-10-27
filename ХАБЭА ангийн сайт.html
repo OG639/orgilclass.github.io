@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head
+
+  <meta charset="UTF-8">
+  <title>Манай Анги</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(120deg, #3a8dde 0%, #8f5be8 100%);
+      min-height: 100vh;
+    }
+    .header {
+      color: #fff;
+      text-align: center;
+      padding: 60px 20px 40px 20px;
+    }
+    .header .icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+      color: #ffe066;
+    }
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 30px 0;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 30px 40px;
+      color: #ffe066;
+      font-size: 22px;
+      min-width: 180px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      text-align: center;
+      backdrop-filter: blur(2px);
+    }
+    .stat-card i {
+      display: block;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    .members-section {
+      background: #f7f8fa;
+      border-radius: 32px 32px 0 0;
+      margin-top: -40px;
+      padding: 40px 0 60px 0;
+      min-height: 400px;
+    }
+    .members-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .members-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    .member-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      width: 220px;
+      padding: 30px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+    }
+    .member-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .member-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #f0f4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: #888;
+      margin: 0 auto 10px auto;
+      border: 2px solid #e0e0e0;
+    }
+    .member-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 6px;
+    }
+    .member-role {
+      font-size: 14px;
+      color: #fff;
+      background: #222;
+      border-radius: 8px;
+      padding: 3px 12px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .member-role.suragch {
+      background: #e0e0e0;
+      color: #444;
+    }
+    .member-role.bagsh {
+      background: #ffe066;
+      color: #222;
+      font-weight: bold;
+    }
+    .footer {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: #222;
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 14px;
+      opacity: 0.85;
+      z-index: 99;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .footer i {
+      margin-right: 6px;
+      color: #ffe066;
+    }
+    /* Modal styles */
+    #memberModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.4);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    #memberModal .modal-content {
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px 40px;
+      min-width: 300px;
+      max-width: 90vw;
+      margin: auto;
+      position: relative;
+      text-align: center;
+    }
+    #memberModal .close {
+      position: absolute;
+      top: 10px;
+      right: 18px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #888;
+    }
+    #memberModal .modal-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #f0f4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      color: #888;
+      margin: 0 auto 16px auto;
+      border: 2px solid #e0e0e0;
+    }
+    #memberModal .modal-role {
+      font-size: 15px;
+      color: #fff;
+      background: #222;
+      border-radius: 8px;
+      padding: 4px 14px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    #memberModal .modal-role.suragch {
+      background: #e0e0e0;
+      color: #444;
+    }
+    #memberModal .modal-role.bagsh {
+      background: #ffe066;
+      color: #222;
+      font-weight: bold;
+    }
+    @media (max-width: 900px) {
+      .members-list { gap: 16px; }
+      .member-card { width: 160px; padding: 20px 8px; }
+      .stat-card { min-width: 120px; padding: 18px 10px; font-size: 16px;}
+      #memberModal .modal-content { padding: 18px 8px; }
+    }
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #222;
+      color: #ffe066;
+      z-index: 9999;
+      display: flex !important;
+      visibility: visible !important;
+      align-items: center;
+      padding: 0 40px;
+      height: 54px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .navbar .menu-icon {
+      font-size: 22px;
+      font-weight: bold;
+      margin-right: 30px;
+    }
+    .navbar ul {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar ul li {
+      cursor: pointer;
+    }
+    .navbar ul li a {
+      color: #ffe066;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 18px;
+      transition: color 0.2s;
+    }
+    .navbar ul li a:hover {
+      color: #fff200;
+    }
+    body.dark {
+      background: linear-gradient(120deg, #181c2f 0%, #3a2a5d 100%);
+      color: #eee;
+    }
+    .header.dark { color: #ffe066; }
+    .members-section.dark { background: #23243a; }
+    .member-card.dark { background: #23243a; color: #ffe066; }
+    .member-avatar.dark { background: #181c2f; color: #ffe066; border-color: #3a2a5d; }
+    .member-role.dark { background: #ffe066; color: #23243a; }
+    .member-role.suragch.dark { background: #3a2a5d; color: #ffe066; }
+    .member-role.bagsh.dark { background: #ffe066; color: #23243a; }
+    .footer.dark { background: #181c2f; color: #ffe066; }
+    #memberModal .modal-content.dark { background: #23243a; color: #ffe066; }
+    #memberModal .modal-avatar.dark { background: #181c2f; color: #ffe066; border-color: #3a2a5d; }
+    #memberModal .modal-role.dark { background: #ffe066; color: #23243a; }
+    #memberModal .modal-role.suragch.dark { background: #3a2a5d; color: #ffe066; }
+    #memberModal .modal-role.bagsh.dark { background: #ffe066; color: #23243a; }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <div class="menu-icon"><i class="fa-solid fa-bars"></i> Меню</div>
+    <ul id="menu">
+      <li><a href="index.html">нүүр</a></li>
+      <li><a href="about.html">Тухай</a></li>
+      <li><a href="contact.html">холбоо</a></li>
+      <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSfufXb-hYP0Y_tdsMT3FDmnGMIFUk2SkBH4YM9N2BEA-wnT1g/viewform?embedded=true">бүртгүүлэх</a></li>
+    </ul>
+    <button id="darkModeBtn" onclick="toggleDarkMode()" style="background:#222; color:#ffe066; border:none; border-radius:8px; padding:8px 18px; font-size:16px; cursor:pointer; margin-left:auto;">
+      <i class="fa-solid fa-moon"></i> харанхуй mode
+    </button>
+  </div>
+  <div style="margin-top:74px;">
+    
+    <div class="header">
+      <div class="icon"><i class="fa-solid fa-graduation-cap"></i></div>
+      <h1>Манай Анги</h1>
+      <div style="font-size:18px; font-weight:400; margin-bottom:20px;">Хамтдаа суралцаж, хөгжиж байна</div>
+      <div class="stats">
+        <div class="stat-card">
+          <i class="fa-solid fa-users"></i>
+          7 Сурагч<br>
+        </div>
+        <div class="stat-card">
+          <i class="fa-solid fa-calendar-days"></i>
+          2025-2026<br>
+
+          <div class="stat-card" onclick="window.location.href='oroltsogch.html'" style="cursor:pointer;">
+              <i class="fa-solid fa-calendar-days"></i>
+              <snap style="font-size:14fx; color:#fff;">Идэвхтэй оролцогч</snap>
+          </div>
+
+        <div class="stat-card" onclick="window.location.href='hicheel.html'" style="cursor:pointer;">
+            <i class="fa-solid fa-calendar-days"></i>
+          <span style="font-size:14px; color:#b4ff06;">Хичээлийн жил</span>
+        </div>
+
+        <div class="stat-card" onclick="window.location.href='//ptc.khe.gov.mn/.html'" style="cursor:pointer;">
+            <i class="fa-solid fa-bell"></i>
+            сургуулын<br>
+          <span style="font-size:14px; color:#fff;">мэдээ мэдээлэл</span>
+        </div>
+      </div>
+    </div>
+    <div class="members-section">
+      <div class="members-title">Ангийн Гишүүд</div>
+      <div class="members-list">
+        <div class="member-card" onclick="showMember('Цэрэн-Очир', 'Ангийн дарга', 'cerenochir@example.com')">
+          <div class="member-avatar">ЦО</div>
+          <div class="member-name">Цэрэн-Очир</div>
+          <div class="member-role">Ангийн дарга</div>
+        </div>
+        <div class="member-card" onclick="showMember('Оргил', 'Сурагч', 'galbatarorgil@gmail.com')">
+          <div class="member-avatar">О</div>
+          <div class="member-name">Оргил</div>
+          <div class="member-role suragch">Сурагч</div>
+        </div>
+        <div class="member-card" onclick="showMember('Хэрлэн-Баяр', 'Сурагч', 'kherlen@example.com')">
+          <div class="member-avatar">ХБ</div>
+          <div class="member-name">Хэрлэн-Баяр</div>
+          <div class="member-role suragch">Сурагч</div>
+        </div>
+        <div class="member-card" onclick="showMember('Онон', 'Сурагч', 'onon@example.com')">
+          <div class="member-avatar">О</div>
+          <div class="member-name">Онон</div>
+          <div class="member-role suragch">Сурагч</div>
+        </div>
+        <div class="member-card" onclick="showMember('Хатан-Пүрэв', 'Сурагч', 'khatanpurev@example.com')">
+          <div class="member-avatar">ХП</div>
+          <div class="member-name">Хатан-Пүрэв</div>
+          <div class="member-role suragch">Сурагч</div>
+          <div class="member-cantoct">холбоо барих</div>
+        </div>
+        <div class="member-card" onclick="showMember('Болор-Эрдэнэс', 'Сурагч', 'abolorerdenes@gmail.com')">
+          <div class="member-avatar">БЭ</div>
+          <div class="member-name">Болор-Эрдэнэс</div>
+          <div class="member-role suragch">Сурагч</div>
+        </div>
+        <div class="member-card" onclick="showMember('Нандин-Заяа', 'Сурагч', 'nandin@example.com')">
+          <div class="member-avatar">НЗ</div>
+          <div class="member-name">Нандин-Заяа</div>
+          <div class="member-role suragch">Сурагч</div>
+        </div>
+        <div class="member-card" onclick="showMember('Батаа', 'Сурагч', 'bataa@example.com')">
+          <div class="member-avatar">Б</div>
+          <div class="member-name">Батаа</div>
+          <div class="member-role suragch">Сурагч</div>
+        </div>
+        <div class="member-card" onclick="showMember('Ууганхүү', 'Багш', 'uugankhuu@example.com')">
+          <div class="member-avatar">УХ</div>
+          <div class="member-name">Ууганхүү</div>
+          <div class="member-role bagsh">Багш</div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal цонх -->
+    <div id="memberModal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-avatar" id="modalAvatar"></div>
+        <h2 id="modalName"></h2>
+        <div id="modalRole" class="modal-role"></div>
+        <div id="modalContact" style="margin-top:10px; color:#6d5e5e;"></div>
+      </div>
+    </div>
+    <div class="footer">
+      <i class="fa-solid fa-code"></i> powered by <b>orgil</b>
+    </div>
+  </div>
+  <script>
+    function showMember(name, role, contact) {
+      document.getElementById('modalName').textContent = name;
+      document.getElementById('modalRole').textContent = role;
+      document.getElementById('modalRole').className = 'modal-role ' + (role === 'Сурагч' ? 'suragch' : (role === 'Багш' ? 'bagsh' : ''));
+      document.getElementById('modalContact').textContent = "И-мэйл: " + contact;
+      // Автар үсэг
+      let avatar = '';
+      if (name.indexOf('-') > 0) {
+        let arr = name.split('-');
+        avatar = arr.map(x => x.trim()[0]).join('');
+      } else {
+        avatar = name.split(' ').map(x => x.trim()[0]).join('');
+      }
+      document.getElementById('modalAvatar').textContent = avatar;
+      document.getElementById('memberModal').style.display = 'flex';
+    }
+    function closeModal() {
+      document.getElementById('memberModal').style.display = 'none';
+    }
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      document.querySelector('.header').classList.toggle('dark');
+      document.querySelector('.members-section').classList.toggle('dark');
+      document.querySelector('.footer').classList.toggle('dark');
+      document.querySelectorAll('.member-card').forEach(e => e.classList.toggle('dark'));
+      document.querySelectorAll('.member-avatar').forEach(e => e.classList.toggle('dark'));
+      document.querySelectorAll('.member-role').forEach(e => e.classList.toggle('dark'));
+      document.querySelector('#memberModal .modal-content').classList.toggle('dark');
+      document.querySelector('#memberModal .modal-avatar').classList.toggle('dark');
+      document.querySelectorAll('#memberModal .modal-role').forEach(e => e.classList.toggle('dark'));
+    }
+    function checkPassword() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const error = document.getElementById("error");
+      // Жишээ: зөвхөн "angi2025"/"user1" нэвтрэх
+      if (username === "user1" && password === "angi2025")
+        document.getElementById("login").style.display = "none";
+    }
+    function showAttendance() {
+      document.getElementById("attendance").style.display = "block";
+    }
+    function saveAttendance() {
+      const checkboxes = document.querySelectorAll('input[name="student"]:checked');
+      let names = [];
+      checkboxes.forEach((cb) => {
+        names.push(cb.value);
+      });
+      document.getElementById("savedMessage").textContent = "Хадгаллаа: " + names.join(", ");
+    }
+  </script>
+</body>
+</html>
+
+<hr>
+
+<div id="modal">
+  <p id="modelname"
+  <p id="modalRole" class="modal-role"></p>
+  <p id="modalContact"></p>
+</div>
+<style>
